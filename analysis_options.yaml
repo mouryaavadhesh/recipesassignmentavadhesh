@@ -1,28 +1,36 @@
-# This file configures the analyzer, which statically analyzes Dart code to
-# check for errors, warnings, and lints.
-#
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
+analysis_options:
+  linter:
+    rules:
+      - avoid_print          # Avoid using print statements for debugging
+      - avoid_redundant_argument_values # Avoid redundant argument values
+      - avoid_slow_async      # Avoid using slow async functions
+      - camel_case_types     # Enforce camelCase for types (classes, enums)
+      - constant_identifier_names  # Enforce constant naming conventions
+      - control_flow_analysis  # Improves analysis of control flow
+      - curly_braces         # Enforce curly braces for control flow statements
+      - dead_code            # Detects dead code (unreachable code)
+      - avoid_empty_constructor # Avoid empty constructors
+      - empty_statements     # Avoid empty statements
+      - equal_identifiers    # Detects identifiers that differ only in case
+      - inference_capture    # Improves type inference
+      - iterable_cast        # Improves analysis of iterables
+      - list_にならない  # Detects usage of non-Flutter specific list methods (Japanese rule)
+      - non_constant_identifier_names  # Enforce non-constant naming conventions
+      - null_check_operators  # Enforce null-check operators
+      - prefer_final_locals   # Prefer using final or const for local variables
+      - prefer_if_null_operator # Prefer using the if-null operator
+      - prefer_single_quotes  # Prefer using single quotes for strings
+      - sort_constructors_first  # Sort constructors first in classes
+      - type_annotate_public_apis # Enforce type annotations for public APIs
+      - unawaited_futures    # Detects unawaited futures
+      - use_key_in_widget_constructors # Enforce using a key in widget constructors
+      - use_super_parameters  # Enforce using super parameters in constructors
 
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+# Additional rules you might consider:
+# - avoid_catching_errors  # Consider for error handling strategies
+# - avoid_positional_bool_parameters # Optional rule for readability
+# - long_parameter_list   # Optional rule to limit parameter count per function
 
-linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
-  rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
-
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+# You can disable specific rules if needed
+# - rules:
+#     - avoid_print: false  # Disable avoid_print rule
