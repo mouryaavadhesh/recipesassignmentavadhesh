@@ -1,29 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
 
 class ReusableWidget {
-  static toastMsg(String msg) {
-    Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        fontSize: 16.0);
-  }
-
-  static toastMsgInternet(BuildContext context) {
-    Fluttertoast.showToast(
-        msg: 'Currently connected to no network. Please connect to a network!',
-        toastLength: Toast.LENGTH_SHORT,
-        fontSize: 16.0);
-  }
-
-  static toastMsgLong(String msg) {
-    Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_LONG,
-        fontSize: 16.0);
-  }
-
   static Widget animationLayout(Animation gradientPosition, double width) {
     return Card(
       margin:
