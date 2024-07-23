@@ -1,16 +1,15 @@
 # recipes
 
-A new Flutter project.
+Flutter application that manages a list of recipes. The application should allow users
+to perform various operations such as adding, editing, deleting, viewing, and filtering recipes.
+
 
 ## Getting Started
 
 This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+necessary logic add ,edit ,delete and delete all recipes is implemented in class 
+recipe.dart
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+We are using cubit for state management.
+Rx java for field check which use stream. 
