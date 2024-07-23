@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:recipes/data/entities/item_model.dart';
+import 'package:recipes/data/entities/recipes_model.dart';
 import 'package:recipes/data/utils/base/cubit.dart';
 import 'package:recipes/presentation/screen/recipes_state.dart';
 import 'package:rxdart/rxdart.dart';

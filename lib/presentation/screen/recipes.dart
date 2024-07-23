@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipes/data/entities/item_model.dart';
+import 'package:recipes/data/entities/recipes_model.dart';
 import 'package:recipes/data/utils/constant/constants.dart';
 import 'package:recipes/presentation/screen/recipes_cubit.dart';
 import 'package:recipes/presentation/screen/recipes_state.dart';

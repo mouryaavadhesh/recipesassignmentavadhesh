@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:recipes/data/entities/item_model.dart';
+import 'package:recipes/data/entities/recipes_model.dart';
 import 'package:recipes/data/utils/base/cubit.dart';
 
 class RecipesState extends BlocState {
