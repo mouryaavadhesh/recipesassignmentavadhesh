@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/data/entities/item_model.dart';
 import 'package:recipes/data/utils/constant/constants.dart';
-import 'package:recipes/presentation/screen/recipes._cubit.dart';
+import 'package:recipes/presentation/screen/recipes_cubit.dart';
 import 'package:recipes/presentation/screen/recipes_state.dart';
+import 'package:recipes/presentation/styles/text_styling.dart';
 import 'package:recipes/presentation/template/text.dart';
 import 'package:recipes/presentation/widgets/reusable_widget.dart';
 
@@ -14,10 +15,10 @@ class Recipes extends StatefulWidget {
   _RecipesState createState() => _RecipesState();
 }
 
-class _RecipesState extends State<Recipes>
-    with TickerProviderStateMixin {
+class _RecipesState extends State<Recipes> with TickerProviderStateMixin {
   late Animation animation;
   late AnimationController animationController;
+  final TextEditingController categoryController = TextEditingController();
 
   @override
   void initState() {
@@ -36,19 +37,161 @@ class _RecipesState extends State<Recipes>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) =>
-          RecipesCubit(MenuInitialState()),
-      child: BlocBuilder<RecipesCubit, RecipesState>(
-        builder: (context, state) {
-          Widget screenView = Container();
-
-          if (state is LoadingState) {
-            screenView = ReusableWidget.animationLayout(
-                animation, MediaQuery.of(context).size.width);
-          } else if (state is LoadedState) {
-            screenView = CustomScrollView(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: MyText.textBold(text: "Recipes", fontSize: 14),
+      ),
+      body: BlocProvider(
+        create: (BuildContext context) =>
+            RecipesCubit(InitialState(recipesList: const [])),
+        child: BlocBuilder<RecipesCubit, RecipesState>(
+          builder: (context, state) {
+            return CustomScrollView(
               slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          StreamBuilder<String>(
+                              stream: context.read<RecipesCubit>().nameStream,
+                              builder: (context, snapshot) {
+                                return TextField(
+                                  maxLength: 100,
+                                  style: TextStyling.textMedium14(),
+                                  controller: context
+                                      .read<RecipesCubit>()
+                                      .nameController,
+                                  onChanged: (text) => {
+                                    context
+                                        .read<RecipesCubit>()
+                                        .updateName(text)
+                                  },
+                                  textCapitalization: TextCapitalization.words,
+                                  keyboardType: TextInputType.text,
+                                  decoration: const InputDecoration(
+                                      counterText: "",
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      isDense: true,
+                                      hintText: "Title"),
+                                );
+                              }),
+                          StreamBuilder<String>(
+                              stream:
+                                  context.read<RecipesCubit>().categoryStream,
+                              builder: (context, snapshot) {
+                                return TextField(
+                                  maxLength: 100,
+                                  style: TextStyling.textMedium14(),
+                                  controller: context
+                                      .read<RecipesCubit>()
+                                      .categoryController,
+                                  onChanged: (text) => {
+                                    context
+                                        .read<RecipesCubit>()
+                                        .updateCategory(text)
+                                  },
+                                  textCapitalization: TextCapitalization.words,
+                                  keyboardType: TextInputType.text,
+                                  decoration: const InputDecoration(
+                                      counterText: "",
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      isDense: true,
+                                      hintText: "Category"),
+                                );
+                              }),
+                          StreamBuilder<String>(
+                              stream: context
+                                  .read<RecipesCubit>()
+                                  .descriptionStream,
+                              builder: (context, snapshot) {
+                                return TextField(
+                                  maxLength: 100,
+                                  style: TextStyling.textMedium14(),
+                                  controller: context
+                                      .read<RecipesCubit>()
+                                      .descriptionController,
+                                  onChanged: (text) => {
+                                    context
+                                        .read<RecipesCubit>()
+                                        .updateDescription(text)
+                                  },
+                                  textCapitalization: TextCapitalization.words,
+                                  keyboardType: TextInputType.text,
+                                  decoration: const InputDecoration(
+                                      counterText: "",
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      isDense: true,
+                                      hintText: "Description"),
+                                );
+                              }),
+                        ],
+                      ),
+                    ),
+                    childCount: 1,
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          StreamBuilder<bool>(
+                              stream: context.read<RecipesCubit>().isAddEnabled,
+                              builder: (context, snapshot) {
+                                return ElevatedButton(
+                                  onPressed: snapshot.hasData
+                                      ? () {
+                                          context
+                                              .read<RecipesCubit>()
+                                              .addRecipes();
+                                        }
+                                      : null,
+                                  // Disable button if not enabled
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: snapshot.hasData
+                                        ? Colors.white
+                                        : Colors.grey,
+                                    // Adjust color based on enabled state
+                                    backgroundColor: Colors
+                                        .red, // Adjust background color as needed
+                                  ),
+                                  child: const Text('Add'),
+                                );
+                              }),
+                          ElevatedButton(
+                            onPressed: state.recipesList.isNotEmpty
+                                ? () {
+                                    context
+                                        .read<RecipesCubit>()
+                                        .deleteAllRecipes();
+                                  }
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: state.recipesList.isNotEmpty
+                                  ? Colors.white
+                                  : Colors.grey,
+                              // Adjust color based on enabled state
+                              backgroundColor: Colors
+                                  .red, // Adjust background color as needed
+                            ),
+                            child: const Text('Delete All'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    childCount: 1,
+                  ),
+                ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) => Card(
@@ -65,9 +208,7 @@ class _RecipesState extends State<Recipes>
                           child: TextField(
                             maxLines: 1,
                             onChanged: (value) {
-                              context
-                                  .read<RecipesCubit>()
-                                  .searchMovie(value);
+                              context.read<RecipesCubit>().searchRecipes(value);
                             },
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(
@@ -85,7 +226,7 @@ class _RecipesState extends State<Recipes>
                               fillColor: Color(0xFFFAFAFA),
                               hintStyle: TextStyle(
                                   color: Color(0xFFd0cece), fontSize: 14),
-                              hintText: "Search Movie By Location",
+                              hintText: "Search Recipes by title or category",
                             ),
                           ),
                         ),
@@ -94,63 +235,82 @@ class _RecipesState extends State<Recipes>
                     childCount: 1,
                   ),
                 ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) =>
-                        _buildMovieList(state.movieData[index]),
-                    childCount: state.movieData.length,
+                if (state.recipesList.isEmpty) ...[
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) => Container(
+                        height: 500,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 20, bottom: 20),
+                        child: MyText.textBold(
+                            text: "No Recipes Found ", fontSize: 14),
+                      ),
+                      childCount: 1,
+                    ),
+                  )
+                ],
+                if (state.recipesList.isNotEmpty) ...[
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) =>
+                          _buildMovieList(state.recipesList[index], context),
+                      childCount: state.recipesList.length,
+                    ),
                   ),
-                )
+                ],
+                if (state is LoadingState) ...[
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) =>
+                          ReusableWidget.animationLayout(
+                              animation, MediaQuery.of(context).size.width),
+                      childCount: 1,
+                    ),
+                  )
+                ]
               ],
             );
-          } else {
-            screenView = Container(
-              height: 500,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              padding: const EdgeInsets.only(
-                  left: 20, right: 20, top: 20, bottom: 20),
-              child: MyText.textBold(text: "No Movie Found ", fontSize: 14),
-            );
-          }
-          return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                title: MyText.textBold(text: "Search Movie", fontSize: 16),
-                elevation: 4,
-              ),
-              body: screenView);
-        },
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildMovieList(MovieResponse movieResponse) => Card(
+  Widget _buildMovieList(RecipesModel recipes, BuildContext context) => Card(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         elevation: 4.0,
         margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Container(
           padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Row(
             children: [
-              MyText.textRegular(
-                  text: movieResponse.productionCompany,
-                  fontSize: 14,
-                  maxLines: 2),
-              MyText.textRegular(
-                  text: movieResponse.distributor, fontSize: 14, maxLines: 2),
-              MyText.textRegular(
-                  text: movieResponse.director, fontSize: 14, maxLines: 2),
-              MyText.textRegular(
-                  text: movieResponse.actor1, fontSize: 14, maxLines: 2),
-              MyText.textRegular(
-                  text: movieResponse.actor2, fontSize: 14, maxLines: 2),
-              MyText.textRegular(
-                  text: movieResponse.actor3, fontSize: 14, maxLines: 2),
-              MyText.textRegular(
-                  text: movieResponse.locations, fontSize: 14, maxLines: 2),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    MyText.textRegular(
+                        text: recipes.title, fontSize: 14, maxLines: 2),
+                    MyText.textRegular(
+                        text: recipes.category, fontSize: 14, maxLines: 2),
+                    MyText.textRegular(
+                        text: recipes.description, fontSize: 14, maxLines: 2),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () =>
+                    context.read<RecipesCubit>().editRecipes(recipes),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () =>
+                    context.read<RecipesCubit>().deleteRecipes(recipes),
+              ),
             ],
           ),
         ),
